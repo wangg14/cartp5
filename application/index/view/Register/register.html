@@ -1,0 +1,291 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>前台注册</title>
+  <style type="text/css">
+  	.cur{
+  		border:1px solid red;
+  	}
+
+  	.curs{
+  		border:1px solid green;
+  	}
+  </style>
+</head>
+<body>
+  {:widget("Cate/header")}
+  <div class="col-sm-6"> 
+         <div class="featured-box featured-box-secundary default info-content"> 
+          <div class="box-content"> 
+           <h4>注册</h4> 
+           <form action="/homeregister/doregister" id="" method="post"> 
+            <div class="row"> 
+             <div class="form-group"> 
+              <div class="col-md-12"> 
+               <label>邮箱</label> 
+               <input type="text" value="" name="email" reminder="请输入正确的邮箱"> <span></span>
+              </div> 
+             </div> 
+            </div> 
+            <div class="row"> 
+             <div class="form-group"> 
+              <div class="col-md-12"> 
+               <label>密码</label> 
+               <input type="text" value="" name="password" reminder="请输入正确的密码"> <span></span>
+              </div>  
+             </div>
+            <div class="row"> 
+             <div class="form-group"> 
+              <div class="col-md-12"> 
+               <label>重复密码</label> 
+               <input type="text" value="" name="repassword" reminder="请重复输入密码"><span></span> 
+              </div> 
+             </div> 
+            </div>
+
+            <div class="row"> 
+             <div class="form-group"> 
+              <div class="col-md-12"> 
+               <label>手机号</label> 
+               <input type="text" value="" name="phone" reminder="请输入手机号"><span></span><a href="javascript:void(0)" class="btn btn-success" id="ss">获取验证码</a> 
+              </div> 
+             </div> 
+            </div>
+
+          <div class="row"> 
+             <div class="form-group"> 
+              <div class="col-md-12"> 
+               <label>输入校验码</label> 
+               <input type="text" value="" name="code" reminder="请输入校验码"><span></span> 
+              </div> 
+             </div> 
+            </div>
+            </div> 
+            <div class="row"> 
+             <div class="col-md-12"> 
+              <input type="submit" value="Register" class="btn btn-primary pull-right push-bottom" data-loading-text="Loading..."> 
+             </div> 
+            </div> 
+           </form> 
+          </div> 
+         </div> 
+        </div>
+  {:widget("Cate/footer")}
+</body>
+<script type="text/javascript">
+	EMAIL=false;
+	PASS=false;
+	REPASS=false;
+	PHONE=false;
+	CODE=false;
+	// alert($);
+	//1.给所有的input框绑定获取焦点事件
+	$("input[type='text']").focus(function(){
+		//获取reminder值
+		reminder=$(this).attr("reminder");
+		// alert(reminder);
+		//给当前事件作用对象的下一个span元素赋值
+		$(this).next("span").css("color","red").html(reminder);
+		//清除curs样式
+		$(this).removeClass("curs");
+		//添加样式
+		$(this).addClass("cur");
+	});
+	//邮箱
+	$("input[name='email']").blur(function(){
+		ob=$(this);
+		//获取邮箱值
+		email=$(this).val();
+		// alert(email);
+		//正则判断 123@qq.com
+		if(email.match(/^\w+@\w+(\.\w+)$/)==null){
+			// alert("邮箱不符合要求");
+			$(this).next("span").css("color","red").html("邮箱不符合要求");
+			$(this).addClass("cur");
+			EMAIL=false;
+		}else{
+			//去重
+			$.get("/homeregister/checkmail",{email:email},function(data){
+				// alert(data);
+				if(data==1){
+					// alert("邮箱已经存在");
+					ob.next("span").css("color","red").html("邮箱已经存在");
+					//移除样式 curs
+					ob.removeClass("curs");
+					//添加样式
+					ob.addClass("cur");
+					EMAIL=false;
+
+				}else{
+					// alert("邮箱可用");
+					ob.next("span").css("color","green").html("邮箱可用");
+					ob.addClass("curs");
+					EMAIL=true;
+				}
+			});
+			// alert("邮箱符合要求");
+			// $(this).next("span").css("color","green").html("邮箱可用");
+			//添加样式
+			// $(this).addClass("curs");
+
+
+		}
+	});
+
+	//密码
+	$("input[name='password']").blur(function(){
+		//获取密码值
+		pass=$(this).val();
+		//正则匹配
+		if(pass.match(/^\w{4,8}$/)==null){
+			$(this).next("span").css("color","red").html("密码必须为4-8位任意的数字字母下划线");
+			$(this).addClass("cur");
+			PASS=false;
+		}else{
+			$(this).next("span").css("color","green").html("密码正确");
+			//添加样式
+			$(this).addClass("curs");
+			PASS=true;
+
+		}
+	});
+
+	//重复密码
+	$("input[name='repassword']").blur(function(){
+		//获取密码值
+		passs=$("input[name='password']").val();
+		//获取重复密码值
+		repass=$(this).val();
+		//正则匹配
+		if(repass.match(/^\w{4,8}$/)==null){
+			$(this).next("span").css("color","red").html("重复密码必须为4-8位任意的数字字母下划线");
+			$(this).addClass("cur");
+			REPASS=false;
+		}else{
+			//对比密码和重复密码是否一致
+			if(repass==passs){
+				$(this).next("span").css("color","green").html("重复密码正确");
+				//添加样式
+				$(this).addClass("curs");
+				REPASS=true;
+			}else{
+				$(this).next("span").css("color","red").html("两次密码不一致");
+				REPASS=false;
+			}			
+
+		}
+	});
+
+	//手机号
+	$("input[name='phone']").blur(function(){
+		o=$(this);
+		//获取手机号
+		phone=$(this).val();
+		//正则判断
+		if(phone.match(/^\d{11}$/)==null){
+			// alert("手机号不合法");
+			$(this).next("span").css("color","red").html("手机号码不合法");
+			$(this).addClass("cur");
+			PHONE=false;
+
+		}else{
+			// alert("手机号合法");
+			
+			//Ajax 校验手机号是否重复
+			$.get("/homeregister/checkphone",{phone:phone},function(data){
+				// alert(data);
+				if(data==1){
+					o.next("span").css("color","red").html("手机号已经存在");
+					o.addClass("cur");
+					PHONE=false;
+				}else{
+					o.next("span").css("color","green").html("手机号码可用");
+					o.addClass("curs");
+					PHONE=true;
+				}
+			});
+
+		}
+	});
+
+	//获取button
+	$("#ss").click(function(){
+		//获取输入的手机号
+		p=$("input[name='phone']").val();
+		os=$(this);
+		// alert(p);
+		//Ajax
+		$.get("/homeregister/checkcode",{p:p},function(data){
+			// alert(data);
+			// {"code":"000000","count":"1","create_date":"2018-05-22 17:22:00","mobile":"15322271110","msg":"OK","smsid":"a014ada3a5cb6d05069287caf557778a","uid":""}
+			//if
+			if(data.code==000000){
+				//倒计时
+				m=60;
+				mytime=setInterval(function(){
+					m--;
+					//赋值给button
+					os.html(m+"秒重新发送");
+					//禁用button
+					os.attr('disabled',true);
+					//判断
+					if(m==0){
+						//清除定时器
+						clearInterval(mytime);
+						//button 赋值
+						os.html("重新发送");
+						//激活按钮
+						os.attr("disabled",false);
+					}
+
+				},1000);
+			}
+		},"json");
+	})
+
+	//输入校验码
+	$("input[name='code']").blur(function(){
+		c=$(this);
+		//获取输入的校验码
+		code=$(this).val();
+		//Ajax
+		$.get("/homeregister/checkfcode",{code:code},function(data){
+			// alert(data);
+			if(data==1){
+				// alert("校验码正确");
+				c.next("span").css("color","green").html("校验码正确");
+				c.addClass("curs");
+				CODE=true;
+			}else if(data==2){
+				// alert("校验码有误");
+				c.next("span").css("color","red").html("校验码有误");
+				c.addClass("cur");
+				CODE=false;
+			}else if(data==3){
+				// alert("输入的校验码不能为空");
+				c.next("span").css("color","red").html("校验码不能为空");
+				c.addClass("cur");
+				CODE=false;
+			}else{
+				// alert("校验码已经过期");
+				c.next("span").css("color","red").html("校验码已经过期");
+				c.addClass("cur");
+				CODE=false;
+			}
+		});
+	});
+	//给form绑定表单提交事件
+	$("form").submit(function(){
+		//让input 元素触发失去焦点事件 trigger
+		$("input").trigger("blur");
+		// return true;
+		if(EMAIL && PASS && REPASS && PHONE && CODE){
+			return true;
+		}else{
+			return false;
+		}
+	});
+
+</script>
+</html>

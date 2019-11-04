@@ -1,0 +1,33 @@
+{extend name="AdminPublic:public"}
+{block name="main"}
+<div style="width:100%;height:200px;background-color:pink">这是页面主体</div>
+<h1>函数使用:{$time|date="Y-m-d",###}</h1>
+<h1>MD5使用:{$a|md5}</h1>
+<h1>多个函数使用:{$b|md5|substr=0,5}</h1>
+<h1>遍历</h1>
+<table border="1px" width="400px">
+	<tr>
+		<th>NAME</th>
+		<th>AGE</th>
+
+	</tr>
+
+	{volist name="arr" id="row"}
+	<tr>
+		<td>{$row['name']}</td>
+		<td>{$row['age']}</td>
+
+	</tr>
+	{/volist}
+</table>
+{if condition="$c==10"}
+	姚明
+{elseif condition="($c<10)"}
+	科比
+{else}
+	奥尼尔
+{/if}
+{/block}
+{block name="title"}
+	前台首页
+{/block}

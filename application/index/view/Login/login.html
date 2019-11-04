@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>前台登录</title>
+</head>
+<body>
+  {:widget("Cate/header")}
+  	<div class="col-sm-6"> 
+   <div class="featured-box featured-box-secundary default info-content"> 
+    <div class="box-content"> 
+     <h4>登录</h4> 
+     <form action="/homelogin/dologin" id="" method="post"> 
+      <div class="row"> 
+       <div class="form-group"> 
+        <div class="col-md-12"> 
+         <label>邮箱</label> 
+         <input type="text" value="" name="email" class="form-control input-lg"> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="row"> 
+       <div class="form-group"> 
+        <div class="col-md-12"> 
+         <a class="pull-right" href="/homelogin/forget">(忘记密码?)</a> 
+         <label>密码</label> 
+         <input type="password" name="password" value="" class="form-control input-lg"> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="row"> 
+       <div class="col-md-6"> 
+        <input type="submit" value="Login" class="btn btn-primary pull-right push-bottom" data-loading-text="Loading..."> 
+       </div> 
+      </div> 
+     </form> 
+    </div> 
+   </div> 
+  </div>
+  {:widget("Cate/footer")}
+</body>
+</html>
